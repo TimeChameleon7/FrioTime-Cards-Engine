@@ -22,13 +22,15 @@ public class GameLoader {
             for (Iterator<JarEntry> it = jarFile.entries().asIterator(); it.hasNext(); ) {
                 JarEntry entry = it.next();
                 if (entry.toString().contains(".class")) {
-                    if(!entry.toString().endsWith("Game.class")) {
+                    if(!entry.toString().endsWith("/Game.class")) {
                         String gameToLoad = entry.toString().replace('/', '.').substring(0, entry.toString().length() - 6);
                         Class<?> importedGame = Class.forName(gameToLoad, true, loader);
-                        Class<? extends Game> extendedGame = importedGame.asSubclass(Game.class);
+                        if(Game.class.isAssignableFrom(importedGame)) {
+                            Class<? extends Game> extendedGame = importedGame.asSubclass(Game.class);
 
-                        Constructor<? extends Game> gameConstructor = extendedGame.getConstructor();
-                        return gameConstructor.newInstance();
+                            Constructor<? extends Game> gameConstructor = extendedGame.getConstructor();
+                            return gameConstructor.newInstance();
+                        }
                     }
                 }
             }
@@ -55,7 +57,7 @@ public class GameLoader {
                     games[i] = game;
                     i++;
                 } else {
-                    System.out.println("Could not load " + jar);
+                    System.out.println("No class implementing Game found in " + jar);
                 }
             }
             return games;
