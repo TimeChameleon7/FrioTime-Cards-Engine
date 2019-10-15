@@ -1,3 +1,5 @@
+package com.ft.ce.core;
+
 public enum Name {
     ACE((byte) 0b00000000),
     TWO((byte) 0b00000001),

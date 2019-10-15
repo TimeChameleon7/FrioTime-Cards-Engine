@@ -1,3 +1,5 @@
+package com.ft.ce.core;
+
 public class Card {
     public final Name name;
     public final Suite suite;

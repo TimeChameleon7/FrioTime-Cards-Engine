@@ -1,4 +1,6 @@
-import com.ft.ce.tools.Game;
+package com.ft.ce.core;
+
+import com.ft.ce.tools.IGame;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -15,7 +17,7 @@ public class GameLoader {
      * @param game File to a jar file that contains a class implementing Game.
      * @return Returns a Game that is found in the jar file.
      */
-    private Game loadGame(File game) {
+    private IGame loadGame(File game) {
         try {
             ClassLoader loader = URLClassLoader.newInstance(new URL[] {game.toURI().toURL()}, getClass().getClassLoader());
             JarFile jarFile = new JarFile(game);
@@ -25,17 +27,17 @@ public class GameLoader {
                     if(!entry.toString().endsWith("/Game.class")) {
                         String gameToLoad = entry.toString().replace('/', '.').substring(0, entry.toString().length() - 6);
                         Class<?> importedGame = Class.forName(gameToLoad, true, loader);
-                        if(Game.class.isAssignableFrom(importedGame)) {
-                            Class<? extends Game> extendedGame = importedGame.asSubclass(Game.class);
+                        if(IGame.class.isAssignableFrom(importedGame)) {
+                            Class<? extends IGame> extendedGame = importedGame.asSubclass(IGame.class);
 
-                            Constructor<? extends Game> gameConstructor = extendedGame.getConstructor();
+                            Constructor<? extends IGame> gameConstructor = extendedGame.getConstructor();
                             return gameConstructor.newInstance();
                         }
                     }
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error [loadGame/GameLoader]");
+            System.out.println("Error [loadGame/com.ft.ce.core.GameLoader]");
         }
         return null;
     }
@@ -45,14 +47,14 @@ public class GameLoader {
      * @param gamesDir Path to a folder containing jar files with classes that implement Game.
      * @return Returns an array of classes that implement Game.
      */
-    static public Game[] loadAllGames(String gamesDir) {
+    static public IGame[] loadAllGames(String gamesDir) {
         GameLoader gl = new GameLoader();
         File gamesFolder = new File(gamesDir);
         if(gamesFolder.exists()) {
-            Game[] games = new Game[Objects.requireNonNull(gamesFolder.listFiles()).length];
+            IGame[] games = new IGame[Objects.requireNonNull(gamesFolder.listFiles()).length];
             int i = 0;
             for (File jar : Objects.requireNonNull(gamesFolder.listFiles())) {
-                Game game = gl.loadGame(jar);
+                IGame game = gl.loadGame(jar);
                 if(game != null) {
                     games[i] = game;
                     i++;
@@ -64,6 +66,14 @@ public class GameLoader {
         } else {
             System.out.println(gamesDir + " does not exist!");
             return null;
+        }
+    }
+
+    public static void main(String[] args) {
+        IGame[] games = loadAllGames(System.getProperty("user.dir") + "/games");
+        assert games != null;
+        if(games.length > 0) {
+            games[0].init();
         }
     }
 }

@@ -1,3 +1,5 @@
+package com.ft.ce.core;
+
 public enum Suite {
     SPADES((byte) 0b00000000),
     HEARTS((byte) 0b00010000),
