@@ -4,17 +4,19 @@
 // Added dependency of the core project.
 // Any tools to be used by a game should be found in com.ft.ce.tools in the core project.
 // If there is an update to one of the files in the core project it will update here as well.
-import com.ft.ce.tools.IGame;
+import com.ft.ce.tools.AGame;
 
-public class TestIGame implements IGame {
+public class TestGame extends AGame {
 
     @Override
     public void init() {
-        gameState.testPrint();
+        gameState.setStateValue(7);
     }
 
     @Override
     public void run() {
-        System.out.println("Hello run");
+        if(gameState.getStateValue() > 2) {
+            System.out.println(gameState.getStateValue());
+        }
     }
 }

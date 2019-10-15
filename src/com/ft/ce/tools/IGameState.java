@@ -1,5 +1,6 @@
 package com.ft.ce.tools;
 
 public interface IGameState {
-    void testPrint();
+    void setStateValue(int value);
+    int getStateValue();
 }
