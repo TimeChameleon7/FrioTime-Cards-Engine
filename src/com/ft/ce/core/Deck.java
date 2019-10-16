@@ -107,4 +107,8 @@ public class Deck {
             this.predicate = predicate;
         }
     }
+
+    public Card draw() {
+        return cards.remove(cards.size() - 1);
+    }
 }

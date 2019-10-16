@@ -7,16 +7,16 @@
 import com.ft.ce.tools.AGame;
 
 public class TestGame extends AGame {
+    int drawPile;
 
     @Override
     public void init() {
-        gameState.setStateValue(7);
+        drawPile = gameState.addNewDeck();
+        gameState.shuffleDeck(drawPile);
     }
 
     @Override
     public void run() {
-        if(gameState.getStateValue() > 2) {
-            System.out.println(gameState.getStateValue());
-        }
+        System.out.println(gameState.draw(drawPile));
     }
 }
