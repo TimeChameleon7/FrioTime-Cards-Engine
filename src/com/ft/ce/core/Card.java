@@ -18,7 +18,11 @@ public class Card {
     }
 
     public byte[] toBytes() {
-        return new byte[]{(byte) (suite.mask ^ name.mask)};
+        if (name == Name.JOKER) {
+            return new byte[]{name.mask};
+        } else {
+            return new byte[]{(byte) (suite.mask ^ name.mask)};
+        }
     }
 
     public boolean is(Name name) {
