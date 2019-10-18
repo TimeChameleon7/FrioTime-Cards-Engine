@@ -7,7 +7,7 @@ package com.ft.ce.core;
  * references to Joker cards should check for the {@linkplain Name}
  * of the card.
  */
-public class Card {
+public final class Card {
     /**
      * The Name of a card, such as "ACE".
      */

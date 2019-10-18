@@ -4,7 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Predicate;
 
+/**
+ * Represents a stack of {@linkplain Card}s.
+ */
 public class Deck {
+    /**
+     * A standard deck of cards, jokers included.
+     */
     private final static Card[] fullDeck = new Card[54];
 
     static {
@@ -21,6 +27,9 @@ public class Deck {
         fullDeck[53] = new Card(Name.JOKER, null);
     }
 
+    /**
+     * The {@linkplain Card}s contained within {@code this} Deck.
+     */
     public final ArrayList<Card> cards;
 
     public Deck(Predicate<Card> predicate) {
@@ -36,15 +45,32 @@ public class Deck {
         this(preset.predicate);
     }
 
+    /**
+     * Returns the current array of {@linkplain Card}s.
+     *
+     * @return the current array of {@linkplain Card}s.
+     */
     public Card[] getCards() {
         return cards.toArray(Card[]::new);
     }
 
+    /**
+     * Shuffles the deck.
+     *
+     * @return {@code this}.
+     */
     public Deck shuffle() {
         Collections.shuffle(cards);
         return this;
     }
 
+    /**
+     * Moves the specified {@linkplain Card} from {@code this} Deck to the specified Deck.
+     *
+     * @param card The card to be removed from this deck, and added to the target deck.
+     * @param deck The deck that the specified card should be added to.
+     * @return {@code true} if the movement was successful.
+     */
     public boolean move(Card card, Deck deck) {
         if (cards.remove(card)) {
             deck.cards.add(card);
@@ -53,6 +79,12 @@ public class Deck {
         return false;
     }
 
+    /**
+     * Returns {@code true} if {@code this} deck can move {@literal count} cards.
+     *
+     * @param count Number of cards to check if could be moved.
+     * @return {@code true} if {@code this} deck can move {@literal count} cards.
+     */
     public boolean canMove(int count) {
         return cards.size() >= count;
     }
