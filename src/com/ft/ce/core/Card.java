@@ -8,7 +8,13 @@ package com.ft.ce.core;
  * of the card.
  */
 public class Card {
+    /**
+     * The Name of a card, such as "ACE".
+     */
     public final Name name;
+    /**
+     * The Suite of a card, such as "SPADES".
+     */
     public final Suite suite;
 
     /**
