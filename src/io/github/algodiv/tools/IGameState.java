@@ -1,4 +1,4 @@
-package com.ft.ce.tools;
+package io.github.algodiv.tools;
 
 public interface IGameState {
     int addNewDeck();

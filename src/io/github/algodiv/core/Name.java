@@ -1,4 +1,4 @@
-package com.ft.ce.core;
+package io.github.algodiv.core;
 
 /**
  * Holds the possible Names of a playing card (ex: ACE).

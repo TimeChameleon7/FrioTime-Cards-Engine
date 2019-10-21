@@ -1,6 +1,6 @@
-package com.ft.ce.core;
+package io.github.algodiv.core;
 
-import com.ft.ce.tools.AGame;
+import io.github.algodiv.tools.AGame;
 
 import java.io.File;
 import java.lang.reflect.Constructor;

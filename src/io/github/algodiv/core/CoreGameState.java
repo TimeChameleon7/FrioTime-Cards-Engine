@@ -1,6 +1,6 @@
-package com.ft.ce.core;
+package io.github.algodiv.core;
 
-import com.ft.ce.tools.GameState;
+import io.github.algodiv.tools.GameState;
 
 import java.util.ArrayList;
 

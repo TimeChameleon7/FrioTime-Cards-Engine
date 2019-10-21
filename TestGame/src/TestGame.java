@@ -4,7 +4,7 @@
 // Added dependency of the core project.
 // Any tools to be used by a game should be found in com.ft.ce.tools in the core project.
 // If there is an update to one of the files in the core project it will update here as well.
-import com.ft.ce.tools.AGame;
+import io.github.algodiv.tools.AGame;
 
 public class TestGame extends AGame {
     int drawPile;

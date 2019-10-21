@@ -1,4 +1,4 @@
-package com.ft.ce.core;
+package io.github.algodiv.core;
 
 import java.util.ArrayList;
 import java.util.Collections;

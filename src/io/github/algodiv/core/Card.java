@@ -1,4 +1,4 @@
-package com.ft.ce.core;
+package io.github.algodiv.core;
 
 /**
  * Represents a standard playing card.

@@ -1,6 +1,6 @@
-package com.ft.ce.core;
+package io.github.algodiv.core;
 
-import com.ft.ce.tools.AGame;
+import io.github.algodiv.tools.AGame;
 
 public class Test {
     public static void main(String[] args) {

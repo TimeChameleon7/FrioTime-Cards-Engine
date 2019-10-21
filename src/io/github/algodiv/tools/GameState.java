@@ -1,4 +1,4 @@
-package com.ft.ce.tools;
+package io.github.algodiv.tools;
 
 public class GameState implements IGameState {
 
