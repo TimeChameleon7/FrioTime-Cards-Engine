@@ -1,4 +1,4 @@
-package io.github.algodiv.core;
+package io.github.algodiv.cards_engine.commons.cards;
 
 /**
  * Holds the possible Suites of a playing card (ex: SPADES).

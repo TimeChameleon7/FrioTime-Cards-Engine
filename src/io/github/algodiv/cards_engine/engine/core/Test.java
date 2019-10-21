@@ -1,6 +1,6 @@
-package io.github.algodiv.core;
+package io.github.algodiv.cards_engine.engine.core;
 
-import io.github.algodiv.tools.AGame;
+import io.github.algodiv.cards_engine.commons.tools.AGame;
 
 public class Test {
     public static void main(String[] args) {

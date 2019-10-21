@@ -1,6 +1,6 @@
-package io.github.algodiv.core;
+package io.github.algodiv.cards_engine.engine.core;
 
-import io.github.algodiv.tools.AGame;
+import io.github.algodiv.cards_engine.commons.tools.AGame;
 
 import java.io.File;
 import java.lang.reflect.Constructor;

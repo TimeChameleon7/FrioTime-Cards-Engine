@@ -1,6 +1,8 @@
-package io.github.algodiv.core;
+package io.github.algodiv.cards_engine.engine.core;
 
-import io.github.algodiv.tools.GameState;
+import io.github.algodiv.cards_engine.commons.cards.Card;
+import io.github.algodiv.cards_engine.commons.cards.Deck;
+import io.github.algodiv.cards_engine.commons.tools.GameState;
 
 import java.util.ArrayList;
 

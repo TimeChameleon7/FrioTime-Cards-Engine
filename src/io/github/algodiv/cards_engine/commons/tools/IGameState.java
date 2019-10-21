@@ -1,4 +1,4 @@
-package io.github.algodiv.tools;
+package io.github.algodiv.cards_engine.commons.tools;
 
 public interface IGameState {
     int addNewDeck();
