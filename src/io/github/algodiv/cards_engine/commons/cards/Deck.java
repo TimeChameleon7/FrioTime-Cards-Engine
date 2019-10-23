@@ -6,6 +6,9 @@ import java.util.function.Predicate;
 
 /**
  * Represents a stack of {@linkplain Card}s.
+ *
+ * Instances of this class can only contain subsets of a standard deck of cards,
+ * if another card set is desired, use {@link CustomDeck}.
  */
 public class Deck {
     /**
@@ -30,8 +33,31 @@ public class Deck {
     /**
      * The {@linkplain Card}s contained within {@code this} Deck.
      */
-    public final ArrayList<Card> cards;
+    protected final ArrayList<Card> cards;
 
+    /**
+     * Makes a Deck with an empty cards list.
+     */
+    protected Deck() {
+        cards = new ArrayList<>();
+    }
+
+    /**
+     * Makes a deck of cards according to the {@linkplain Preset} specified.
+     *
+     * For a higher level of deck loading control, use {@link Deck#Deck(java.util.function.Predicate)}.
+     *
+     * @param preset The Preset that decides how cards are loaded.
+     */
+    public Deck(Preset preset) {
+        this(preset.predicate);
+    }
+
+    /**
+     * Makes a deck of cards according to the {@linkplain Predicate} specified.
+     *
+     * @param predicate The Predicate that decides how cards are loaded.
+     */
     public Deck(Predicate<Card> predicate) {
         cards = new ArrayList<>();
         for (Card card : fullDeck) {
@@ -39,10 +65,6 @@ public class Deck {
                 cards.add(card);
             }
         }
-    }
-
-    public Deck(Preset preset) {
-        this(preset.predicate);
     }
 
     /**
