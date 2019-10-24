@@ -1,13 +1,14 @@
 package io.github.algodiv.cards_engine.engine.core;
 
-import io.github.algodiv.cards_engine.commons.tools.AGame;
+import io.github.algodiv.cards_engine.commons.tools.Game;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -18,56 +19,57 @@ public class GameLoader {
      * @param gamesDir Path to a folder containing jar files with classes that implement Game.
      * @return Returns an array of classes that implement Game.
      */
-    static public AGame[] loadAllGames(String gamesDir) {
-        GameLoader gl = new GameLoader();
+    static public Game[] loadAllGames(String gamesDir) throws IOException {
+        ArrayList<Game> games = new ArrayList<>();
         File gamesFolder = new File(gamesDir);
-        if (gamesFolder.exists()) {
-            AGame[] games = new AGame[Objects.requireNonNull(gamesFolder.listFiles()).length];
-            int i = 0;
-            for (File jar : Objects.requireNonNull(gamesFolder.listFiles())) {
-                AGame game = gl.loadGame(jar);
-                if (game != null) {
-                    game.gameState = new CoreGameState();
-                    games[i] = game;
-                    i++;
-                } else {
-                    System.out.println("No class implementing Game found in " + jar);
+        if (gamesFolder.exists() && gamesFolder.isDirectory()) {
+            File[] files = gamesFolder.listFiles();
+            if (files != null) {
+                for (File jar : files) {
+                    Game game = loadGame(jar);
+                    if (game != null) {
+                        games.add(game);
+                    } else {
+                        System.out.println("No class implementing Game found in " + jar);
+                    }
                 }
+                return games.toArray(Game[]::new);
+            } else {
+                throw new IOException("Unable to read directory " + gamesDir);
             }
-            return games;
+        } else if (!gamesFolder.exists()){
+            throw new FileNotFoundException(gamesDir);
         } else {
-            System.out.println(gamesDir + " does not exist!");
-            return null;
+            throw new NotDirectoryException(gamesDir + " is not a directory");
         }
     }
 
     /**
      * Used to return a class that implements Game from a jar file.
      *
-     * @param game File to a jar file that contains a class implementing Game.
-     * @return Returns a Game that is found in the jar file.
+     * @param jar jar file that contains a class implementing Game.
+     * @return a Game that is found in the jar file.
      */
-    private AGame loadGame(File game) {
+    private static Game loadGame(File jar) {
         try {
-            ClassLoader loader = URLClassLoader.newInstance(new URL[]{game.toURI().toURL()}, getClass().getClassLoader());
-            JarFile jarFile = new JarFile(game);
-            for (Iterator<JarEntry> it = jarFile.entries().asIterator(); it.hasNext(); ) {
-                JarEntry entry = it.next();
-                if (entry.toString().contains(".class")) {
-                    if (!entry.toString().endsWith("/Game.class")) {
-                        String gameToLoad = entry.toString().replace('/', '.').substring(0, entry.toString().length() - 6);
-                        Class<?> importedGame = Class.forName(gameToLoad, true, loader);
-                        if (AGame.class.isAssignableFrom(importedGame)) {
-                            Class<? extends AGame> extendedGame = importedGame.asSubclass(AGame.class);
+            ClassLoader loader = URLClassLoader.newInstance(new URL[]{jar.toURI().toURL()}, GameLoader.class.getClassLoader());
+            JarFile jarFile = new JarFile(jar);
 
-                            Constructor<? extends AGame> gameConstructor = extendedGame.getConstructor();
-                            return gameConstructor.newInstance();
-                        }
+            Iterator<JarEntry> entryIterator = jarFile.entries().asIterator();
+            while (entryIterator.hasNext()) {
+                String entryString = entryIterator.next().toString();
+
+                if (entryString.contains(".class")) {
+                    String classToLoad = entryString.substring(0, entryString.length() - 6);
+                    Class<?> importedClass = Class.forName(classToLoad, true, loader);
+                    if (Game.class.isAssignableFrom(importedClass)) {
+                        return importedClass.asSubclass(Game.class).getConstructor().newInstance();
                     }
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error [loadGame/com.ft.ce.core.GameLoader]");
+            System.out.printf("Problem with loading <Game.class extends class> from %s, Stack Trace: %n", jar);
+            e.printStackTrace();
         }
         return null;
     }
