@@ -53,7 +53,7 @@ public class Deck {
     /**
      * Makes a deck of cards according to the {@linkplain Preset} specified.
      * <p>
-     * For a higher level of deck loading control, use {@link Deck#Deck(java.util.function.Predicate)}.
+     * For a higher level of deck loading control, use {@link Deck#Deck(Predicate)}.
      *
      * @param preset The Preset that decides how cards are loaded.
      */
@@ -196,10 +196,6 @@ public class Deck {
             cards.add(this.cards.get(i));
         }
         return String.format("%s:[%s]", getClass(), cards);
-    }
-
-    public Card draw() {
-        return cards.remove(cards.size() - 1);
     }
 
     /**

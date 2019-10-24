@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
  * references to Joker cards should check for the {@linkplain Name}
  * of the card.
  */
-public final class Card {
+public class Card {
     /**
      * The Name of a card, such as "ACE".
      */
