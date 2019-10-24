@@ -1,8 +1,10 @@
 package io.github.algodiv.cards_engine.commons.cards;
 
+import java.nio.ByteBuffer;
+
 /**
  * Represents a standard playing card.
- *
+ * <p>
  * Note: Joker cards have a {@code null} {@linkplain Suite},
  * references to Joker cards should check for the {@linkplain Name}
  * of the card.
@@ -21,7 +23,7 @@ public final class Card {
      * Creates a card from the input {@linkplain Name} and {@linkplain Suite}.
      * Note: If the Name of the card is {@code JOKER} then Suite will be set to null.
      *
-     * @param name The Name of the card.
+     * @param name  The Name of the card.
      * @param suite The Suite of the card.
      */
     public Card(Name name, Suite suite) {
@@ -44,8 +46,9 @@ public final class Card {
 
     /**
      * Returns a byte[] containing the byte representation of {@code this}.
-     *
+     * <p>
      * Note: The byte[] will always have a length of 1.
+     *
      * @return a byte[] containing the byte representation of {@code this}.
      */
     public byte[] toBytes() {
@@ -82,6 +85,11 @@ public final class Card {
 
         Card card = (Card) obj;
         return card.suite == suite && card.name == name;
+    }
+
+    @Override
+    public int hashCode() {
+        return ByteBuffer.allocate(Integer.BYTES).put(toBytes()).getInt();
     }
 
     @Override

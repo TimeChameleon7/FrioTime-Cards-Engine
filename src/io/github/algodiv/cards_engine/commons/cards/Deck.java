@@ -6,9 +6,14 @@ import java.util.function.Predicate;
 
 /**
  * Represents a stack of {@linkplain Card}s.
- *
+ * <p>
  * Instances of this class can only contain subsets of a standard deck of cards,
  * if another card set is desired, use {@link CustomDeck}.
+ * <p>
+ * Instances of this class are also intended to be made as programmatic mistake safe,
+ * as such, it prevents direct public access to the internal {@linkplain Card} list,
+ * as well as preventing the moving of cards without using a method to specify the destination.
+ * For more control over these operations, use {@linkplain CustomDeck} or extend this class.
  */
 public class Deck {
     /**
@@ -17,6 +22,7 @@ public class Deck {
     private final static Card[] fullDeck = new Card[54];
 
     static {
+        //fullDeck loading
         Name[] names = Name.values();
         Suite[] suites = Suite.values();
 
@@ -32,6 +38,8 @@ public class Deck {
 
     /**
      * The {@linkplain Card}s contained within {@code this} Deck.
+     * <p>
+     * The first index is treated as the bottom of the card stack.
      */
     protected final ArrayList<Card> cards;
 
@@ -44,7 +52,7 @@ public class Deck {
 
     /**
      * Makes a deck of cards according to the {@linkplain Preset} specified.
-     *
+     * <p>
      * For a higher level of deck loading control, use {@link Deck#Deck(java.util.function.Predicate)}.
      *
      * @param preset The Preset that decides how cards are loaded.
@@ -55,6 +63,8 @@ public class Deck {
 
     /**
      * Makes a deck of cards according to the {@linkplain Predicate} specified.
+     * This will load the cards from {@linkplain Deck#fullDeck} into the internal {@linkplain Card} list,
+     * if the predicate returns true for that card.
      *
      * @param predicate The Predicate that decides how cards are loaded.
      */
@@ -87,6 +97,16 @@ public class Deck {
     }
 
     /**
+     * Returns {@code true} if {@code this} deck can move {@literal count} cards.
+     *
+     * @param count Number of cards to check if could be moved.
+     * @return {@code true} if {@code this} deck can move {@literal count} cards.
+     */
+    public boolean canMove(int count) {
+        return cards.size() >= count;
+    }
+
+    /**
      * Moves the specified {@linkplain Card} from {@code this} Deck to the specified Deck.
      *
      * @param card The card to be removed from this deck, and added to the target deck.
@@ -102,15 +122,13 @@ public class Deck {
     }
 
     /**
-     * Returns {@code true} if {@code this} deck can move {@literal count} cards.
+     * Moves the top {@linkplain Card} of {@code this} {@linkplain Card} stack (last index in array) to the
+     * specified deck.
      *
-     * @param count Number of cards to check if could be moved.
-     * @return {@code true} if {@code this} deck can move {@literal count} cards.
+     * @param deck Deck that will gain a {@linkplain Card} if the operation is successful.
+     * @return {@code true} if the operation was successful.
+     * Will only fail if this deck is empty.
      */
-    public boolean canMove(int count) {
-        return cards.size() >= count;
-    }
-
     public boolean moveTop(Deck deck) {
         if (canMove(1)) {
             moveTop0(deck);
@@ -120,11 +138,13 @@ public class Deck {
         }
     }
 
-    private void moveTop0(Deck deck) {
-        Card card = cards.remove(cards.size() - 1);
-        deck.cards.add(card);
-    }
-
+    /**
+     * Programmatic form of dealing one card from {@code this} Deck to each deck in the specified Deck[].
+     *
+     * @param decks the decks to deal to.
+     * @return {@code true} if the operation was successful.
+     * Will only fail if this deck has less cards than Deck[].length
+     */
     public boolean deal(Deck[] decks) {
         if (canMove(decks.length)) {
             deal0(decks);
@@ -134,13 +154,15 @@ public class Deck {
         }
     }
 
-    private void deal0(Deck[] decks) {
-        for (Deck deck : decks) {
-            moveTop0(deck);
-        }
-    }
-
-    public boolean deal(int count, Deck[] decks) {
+    /**
+     * Programmatic form of dealing {@code count} cards from {@code this} Deck to each deck in the specified Deck[].
+     *
+     * @param decks Decks to deal to. Each will gain {@code count} cards.
+     * @param count Amount of cards to deal to each deck.
+     * @return {@code true} if the operation was successful.
+     * Will only fail if this deck has less cards than count * Deck[].length.
+     */
+    public boolean deal(Deck[] decks, int count) {
         if (canMove(count * decks.length)) {
             for (int i = 0; i < count; i++) {
                 deal0(decks);
@@ -150,6 +172,39 @@ public class Deck {
         return false;
     }
 
+    /**
+     * As specified in {@link Deck#deal(Deck[])} but without the size check or boolean return.
+     */
+    private void deal0(Deck[] decks) {
+        for (Deck deck : decks) {
+            moveTop0(deck);
+        }
+    }
+
+    /**
+     * As specified in {@link Deck#moveTop(Deck)} but without the size check or boolean return.
+     */
+    private void moveTop0(Deck deck) {
+        Card card = cards.remove(cards.size() - 1);
+        deck.cards.add(card);
+    }
+
+    @Override
+    public String toString() {
+        ArrayList<Card> cards = new ArrayList<>();
+        for (int i = this.cards.size() - 1; i >= 0; i--) {
+            cards.add(this.cards.get(i));
+        }
+        return String.format("%s:[%s]", getClass(), cards);
+    }
+
+    public Card draw() {
+        return cards.remove(cards.size() - 1);
+    }
+
+    /**
+     * Holds pre-made {@linkplain Predicate}s for ease of Deck creation.
+     */
     public enum Preset {
         FULL_DECK(card -> true),
         NO_JOKERS(card -> !card.is(Name.JOKER)),
@@ -160,9 +215,5 @@ public class Deck {
         Preset(Predicate<Card> predicate) {
             this.predicate = predicate;
         }
-    }
-
-    public Card draw() {
-        return cards.remove(cards.size() - 1);
     }
 }
